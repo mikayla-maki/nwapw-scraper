@@ -25,25 +25,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let selector = Selector::parse("a").unwrap();
 
         for element in fragment.select(&selector) { 
-            match element.value().attr("href") {
-                Some(s) => {
-                    let mut s = s.to_owned();
-                    //Strip # fragments from everything
-                    if let Some(i) =  s.find("#") {
-                        s = s.chars().take(i).collect();
-                    }
-                    //Remove outward links
-                    if let Some(_) = s.find("mailto") {
-                        continue;
-                    }
-                    if let Some(_) = s.find("http") {
-                        continue;
-                    }
-                    if !s.is_empty() {
-                        paths.push(s.to_owned())
-                    }
-                },
-                _ => {}
+            if let Some(s) = element.value().attr("href") {
+                let mut s = s.to_owned();
+                //Strip # fragments from everything
+                if let Some(i) =  s.find("#") {
+                    s = s.chars().take(i).collect();
+                }
+                //Remove outward links
+                if let Some(_) = s.find("mailto") {
+                    continue;
+                }
+                if let Some(_) = s.find("http") {
+                    continue;
+                }
+                if !s.is_empty() {
+                    paths.push(s.to_owned())
+                }
             }
         }
 
